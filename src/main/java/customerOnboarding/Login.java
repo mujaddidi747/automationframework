@@ -14,8 +14,8 @@ public class Login {
     public void setup() throws InterruptedException {
 
 
-        String url = String.valueOf(playwrightGenerics.page.navigate("********"));
-       // assert url.equalsIgnoreCase("http://10.11.11.75/");
+        String url = String.valueOf(playwrightGenerics.page.navigate("*********"));
+
 
         playwrightGenerics.page.locator("//*[@id='user']").fill("**********");
         playwrightGenerics.page.locator("//*[@id='password']").fill("******");
@@ -46,7 +46,16 @@ public class Login {
 
         playwrightGenerics.page.wait(1000);
 
-        if (customerType.equalsIgnoreCase) {
+        if (customerType.equalsIgnoreCase("L0")
+                || customerType.equalsIgnoreCase("L1 Corporate SimSim User")
+                || customerType.equalsIgnoreCase("L1 Guest Corporate SimSim User")
+                || customerType.equalsIgnoreCase("L0 BVS CORPORATE USER")
+                || customerType.equalsIgnoreCase("Remote Zero - Digital Transaction")
+                || customerType.equalsIgnoreCase("Remote Zero - Corporate Sim Sim User")
+                || customerType.equalsIgnoreCase("Guest D/C Block User")
+                || customerType.equalsIgnoreCase("L1")
+                || customerType.equalsIgnoreCase("L0 BVS User")
+                || customerType.equalsIgnoreCase("Merchant Headquarter")) {
 
             CustomerOnboarding.onBoarding(dataValues[0], dataValues[1],
                     dataValues[2], dataValues[3], dataValues[4], dataValues[5],
@@ -59,7 +68,16 @@ public class Login {
 
 
 
-        else if ) {
+        else if( customerType.equalsIgnoreCase("L2-Individual")
+                || customerType.equalsIgnoreCase("L2 Existing Customer")
+                || customerType.equalsIgnoreCase("L2-Individual-10000")
+                || customerType.equalsIgnoreCase("L2-Individual-250000")
+                || customerType.equalsIgnoreCase("L2-Individual-500000")
+                || customerType.equalsIgnoreCase("L2-Individual-99999")
+                || customerType.equalsIgnoreCase("L2 Individual Staff")
+                || customerType.equalsIgnoreCase("L2 Individual Staff-100000")
+                || customerType.equalsIgnoreCase("L2 Individual Staff-2500000")
+                || customerType.equalsIgnoreCase("L2 Individual Staff-700000")) {
 
             cstOnboard.onBoardingL2Group(dataValues[0], dataValues[1],
                     dataValues[2], dataValues[3], dataValues[4], dataValues[5],
@@ -76,7 +94,10 @@ public class Login {
         }
 
 
-        else if (customerType.equalsIgnoreCase) {
+        else if (customerType.equalsIgnoreCase("Corporate Account Master Wallet")
+                || customerType.equalsIgnoreCase("Corporate Sim Sim Account User")
+                || customerType.equalsIgnoreCase("Agent FINJA")
+                || customerType.equalsIgnoreCase("Agent Finca")) {
 
             cstOnboard.onboardingCorporateGroup(dataValues[0],
                     dataValues[1], dataValues[2], dataValues[3], dataValues[4],
