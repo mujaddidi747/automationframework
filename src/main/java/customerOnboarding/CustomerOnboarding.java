@@ -1,12 +1,16 @@
 package customerOnboarding;
 
 import com.microsoft.playwright.*;
+import com.microsoft.playwright.assertions.PlaywrightAssertions;
 import com.microsoft.playwright.options.SelectOption;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static customerOnboarding.playwrightGenerics.page;
 
 
 public class CustomerOnboarding {
@@ -20,95 +24,104 @@ public class CustomerOnboarding {
     static String day = splitter[1];
     // Select selectCustomerType=null;
 
-    static ElementHandle submenu;
-    static ElementHandle submenu1;
+    static Locator submenu;
+    static Locator submenu1;
 
     static SelectOption setDropdown = new SelectOption();
 
-    public static boolean onBoarding(String accountTitle, String accountNumber, String nVerification, String motherName,
-                                     String fatherName, String POB, String gender, String nationality, String identityType, String pProvince, String mProvince, String identityNumber, String permanentAddress,
-                                     String permanentCity, String mailingAddress, String mailingCity, String customerType) throws InterruptedException, IOException {
+    static List<String> cus_type = new ArrayList<>();
+
+    public static synchronized boolean onBoarding(String accountTitle, String accountNumber, String nVerification, String motherName, String fatherName, String POB,
+                                                  String gender, String nationality, String identityType, String pProvince, String mProvince, String identityNumber, String permanentAddress,
+                                                  String permanentCity, String mailingAddress, String mailingCity, String customerType) throws InterruptedException, IOException {
 
 
         Utility.getActionsObject_submenu_homepage(submenu, submenu1);
 
+
+        System.out.println("successfully clicked on customer registration " + customerType);
         //dropdown/customer type selection
+        Locator locator = null;
 
+        page.setDefaultTimeout(10000);
         try {
-            Locator locator = (Locator) playwrightGenerics.page.locator("#id7");
-            locator.selectOption(setDropdown.setLabel(customerType));
-            System.out.println("Selected Customer Type : " + locator);
 
-        } catch (Exception e) {
+            //  String customerTypee = String.valueOf(cus_type);
+            System.out.println("VALUE IS: " + customerType);
 
-            Locator locator = (Locator) playwrightGenerics.page.locator("#id7");
-            locator.selectOption(setDropdown.setLabel(customerType));
-            System.out.println("Selected Customer Type : " + locator);
+            locator = page.locator("#id7");
+
+            cus_type = locator.selectOption(setDropdown.setLabel(String.valueOf(customerType)));
+
+
+        } catch (Exception xcep) {
+
+            xcep.printStackTrace();
         }
 
+        page.setDefaultTimeout(10000);
 
-        if (playwrightGenerics.page.locator("#id7").selectOption(customerType).equals(("L0"))) {
 
-            onBoardingcustomerl0(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality,
-                    identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
+        System.out.println("the customer type to be matched is: " + customerType);
 
-        } else if (playwrightGenerics.page.locator("#id7").selectOption(customerType).equals("L1 Corporate SimSim User")) {
-            OnBoardingL1CorporateUser(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality,
-                    identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
-        } else if (playwrightGenerics.page.locator("#id7").selectOption(customerType).equals("L1 Guest Corporate SimSim User")) {
 
+        if (customerType.equals("L0")) {
+
+            onBoardingcustomerl0(accountTitle, accountNumber, nVerification, motherName, fatherName, POB,
+                    gender, nationality, identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
+
+        } else if (customerType.equals("L1 Corporate SimSim User")) {
+            OnBoardingL1CorporateUser(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality, identityType, pProvince, mProvince,
+                    identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
+        } else if (customerType.equals("L1 Guest Corporate SimSim User")) {
             OnBoardingL1GuestCorporateSimSim(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality, identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
-        } else if (playwrightGenerics.page.locator("#id7").selectOption(customerType).equals("Remote Zero - Digital Transaction")) {
+        } else if (customerType.equals("Remote Zero - Digital Transaction")) {
 
             onBoardingRemoteZeroDigitalTransaction(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality, identityType,
                     pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
-        } else if (playwrightGenerics.page.locator("#id7").selectOption(customerType).equals("L0 BVS CORPORATE USER")) {
-            onBoardingL0bvsCorporateUser(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality, identityType, pProvince, mProvince, identityNumber,
-                    permanentAddress, permanentCity, mailingAddress, mailingCity);
-        } else if (playwrightGenerics.page.locator("#id7").selectOption(customerType).equals("L1")) {
-            onBoardingL1(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality, identityType,
-                    pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
-        } else if (playwrightGenerics.page.locator("#id7").selectOption(customerType).equals("Remote Zero - Corporate Sim Sim User")) {
-            onBoardingRemoteZeroCorporateSimSimUser(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality,
-                    identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
-        } else if (playwrightGenerics.page.locator("#id7").selectOption(customerType).equals("Merchant Headquarter")) {
+        } else if (customerType.equals("L0 BVS CORPORATE USER")) {
+            onBoardingL0bvsCorporateUser(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality, identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
+        } else if (customerType.equals("L1")) {
+            onBoardingL1(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality, identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
+        } else if (customerType.equals("Remote Zero - Corporate Sim Sim User")) {
+            onBoardingRemoteZeroCorporateSimSimUser(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality, identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
+        } else if (customerType.equals("Merchant Headquarter")) {
 
-            merchantHeadquarter(accountTitle, accountNumber, nVerification, motherName, fatherName,
-                    POB, gender, nationality, identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity,
-                    mailingAddress, mailingCity);
+            merchantHeadquarter(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality, identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
 
-        } else if (playwrightGenerics.page.locator("#id7").selectOption(customerType).equals("Guest D/C Block User")) {
+        } else if (customerType.equals("Guest D/C Block User")) {
 
-            onBoardingGuestDCUser(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality,
-                    identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
+            onBoardingGuestDCUser(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality, identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
 
-        } else if (playwrightGenerics.page.locator("#id7").selectOption(customerType).equals("Remote Zero - Corporate Sim Sim User")) {
+        } else if (customerType.equals("Remote Zero - Corporate Sim Sim User")) {
 
-            onBoardingRemoteZeroCorporateSimSimUser(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender
-                    , nationality, identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
+            onBoardingRemoteZeroCorporateSimSimUser(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality, identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
 
         }
 
         return true;
     }
 
-    private static boolean
-    onBoardingcustomerl0(String accountTitle, String accountNumber, String nVerification, String motherName, String fatherName,
-                         String pob, String gender, String nationality, String identityType, String pProvince, String mProvince,
-                         String identityNumber, String permanentAddress, String permanentCity, String mailingAddress, String mailingCity) {
+    private static  boolean onBoardingcustomerl0(String accountTitle, String accountNumber, String nVerification, String motherName, String fatherName, String pob, String gender, String nationality, String identityType, String pProvince, String mProvince, String identityNumber, String permanentAddress, String permanentCity, String mailingAddress, String mailingCity) throws InterruptedException {
 
+        for(int i = 0; i<=2; i++) {
+            try {
 
-        Locator title = playwrightGenerics.page.locator("/html/body/div[1]/div[3]/div[4]/div/div[2]/div[2]/form/div[3]/div[1]/div[2]/input");
-        title.fill(accountTitle);
-        assert accountTitle.matches("^[a-zA-Z]+$");
+                Locator title = playwrightGenerics.page.locator("#id4");
+                title.fill(accountTitle);
+            } catch (Exception e) {
+                Locator title = playwrightGenerics.page.locator("#id4");
+                title.fill(accountTitle);
+                e.printStackTrace();
+            }//  System.out.println(accountTitle);
+        }
 
-        Locator AccountNumber = playwrightGenerics.page.locator("/html/body/div[1]/div[3]/div[4]/div/div[2]/div[2]/form/div[3]/div[1]/div[3]/div/input\")).sendKeys(accountNumber");
+        Locator AccountNumber = playwrightGenerics.page.locator("#msisdn");
         AccountNumber.fill(accountNumber);
-        assert accountNumber.matches("^(\\\\+){0,1}[0-9]+$");
+        //   assert accountNumber.matches("^(\\\\+){0,1}[0-9]+$");
 
         Locator MotherName = playwrightGenerics.page.locator("#motherName");
         MotherName.fill(motherName);
-
 
         Locator FatherName = playwrightGenerics.page.locator("#fatherHusbandName");
         FatherName.fill(fatherName);
@@ -127,38 +140,40 @@ public class CustomerOnboarding {
 
         Locator MailingAddress = playwrightGenerics.page.locator("#mailingOrBusinessAddress");
         MailingAddress.fill(mailingAddress);
-
+        // assertThat(MailingAddress).containsText(mailingAddress);
 
         Locator MailingCity = playwrightGenerics.page.locator("#mailingOrBusinessCity");
         MailingCity.fill(mailingCity);
 
+        Locator verificationType = playwrightGenerics.page.locator("#nadraVerifaction");
+        verificationType.selectOption(setDropdown.setLabel(String.valueOf(nVerification)));
+/*
+        locator = page.locator("#id7");
+        cus_type = locator.selectOption(setDropdown.setLabel(String.valueOf(customerType)));*/
 
-        Locator verificationType = playwrightGenerics.page.locator("/html/body/div[1]/div[3]/div[4]/div/div[2]/div[2]/form/div[3]/div[1]/div[5]/select");
-        verificationType.selectOption(setDropdown.setLabel(nVerification));
-        System.out.println("Selected Customer Type : " + nVerification);
 
         Locator Gender = playwrightGenerics.page.locator("#kvGender");
-        Gender.selectOption(new SelectOption().setLabel(gender));
+        Gender.selectOption(setDropdown.setLabel(String.valueOf(gender)));
 
-        Locator Nationality = playwrightGenerics.page.locator("nationality2");
-        Nationality.selectOption(setDropdown.setLabel(nationality));
+        Locator Nationality = playwrightGenerics.page.locator("#nationality2");
+        Nationality.selectOption(setDropdown.setLabel(String.valueOf(nationality)));
 
         Locator Identity = playwrightGenerics.page.locator("#kvIdentityType");
-        Identity.selectOption(setDropdown.setLabel(identityType));
+        Identity.selectOption(setDropdown.setLabel(String.valueOf(identityType)));
 
-        Locator Education = playwrightGenerics.page.locator("#education");
-        Education.selectOption(setDropdown.setLabel(""));
+   /*     Locator Education = playwrightGenerics.page.locator("#education");
+        Education.selectOption(setDropdown.setLabel(""));*/
 
-        Locator Province = playwrightGenerics.page.locator("permanentState");
-        Province.selectOption(setDropdown.setLabel(pProvince));
+        Locator Province = playwrightGenerics.page.locator("#permanentState");
+        Province.selectOption(setDropdown.setLabel(String.valueOf(pProvince)));
 
-        Locator MailingProvince = playwrightGenerics.page.locator("mailingOrBusinessState");
-        MailingProvince.selectOption(setDropdown.setLabel(""));
+        Locator MailingProvince = playwrightGenerics.page.locator("#mailingOrBusinessState");
+        MailingProvince.selectOption(setDropdown.setLabel(String.valueOf(mProvince)));
 
         Locator InfoMode = playwrightGenerics.page.locator("#id20");
-        InfoMode.selectOption(setDropdown.setLabel(""));
+        InfoMode.selectOption(setDropdown.setLabel("None"));
 
-        try {
+      /*  try {
             playwrightGenerics.page.locator("#birthDate").click();
             ;
             Thread.sleep(500);
@@ -191,20 +206,21 @@ public class CustomerOnboarding {
 
             e.printStackTrace();
         }
+*/
+        page.evaluate("document.getElementById('issuanceDate').value='Jun-05-2022'");
 
-        playwrightGenerics.page.locator("/html/body/div[1]/div[3]/div[4]/div/div[2]/div[2]/form/div[4]/div/div/input").click();
-        playwrightGenerics.page.locator("/html/body/div/div[3]/div[4]/div/div[2]/div/div/form/div[4]/div/input[1]").click();
+        playwrightGenerics.page.locator("//*[@id=\"id9d\"]").click();
+
+        page.setDefaultTimeout(10);
+
+        playwrightGenerics.page.locator("//*[@id=\"idb0\"]").click();
 
 
         return true;
     }
 
 
-    public static boolean OnBoardingL1CorporateUser(String accountTitle, String accountNumber, String nVerification, String motherName,
-                                                    String fatherName, String POB, String gender, String nationality, String identityType, String pProvince, String mProvince,
-                                                    String identityNumber, String permanentAddress,
-                                                    String permanentCity, String mailingAddress,
-                                                    String mailingCity) throws InterruptedException, IOException {
+    public static boolean OnBoardingL1CorporateUser(String accountTitle, String accountNumber, String nVerification, String motherName, String fatherName, String POB, String gender, String nationality, String identityType, String pProvince, String mProvince, String identityNumber, String permanentAddress, String permanentCity, String mailingAddress, String mailingCity) throws InterruptedException, IOException {
 
         onBoardingcustomerl0(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality, identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
 
@@ -222,80 +238,59 @@ public class CustomerOnboarding {
     }
 
 
-    public static boolean OnBoardingL1GuestCorporateSimSim(String accountTitle, String accountNumber,
-                                                           String nVerification, String motherName, String fatherName, String POB, String gender, String nationality, String identityType, String pProvince, String mProvince,
-                                                           String identityNumber, String permanentAddress, String permanentCity, String mailingAddress, String mailingCity) throws IOException {
+    public static boolean OnBoardingL1GuestCorporateSimSim(String accountTitle, String accountNumber, String nVerification, String motherName, String fatherName, String POB, String gender, String nationality, String identityType, String pProvince, String mProvince, String identityNumber, String permanentAddress, String permanentCity, String mailingAddress, String mailingCity) throws IOException, InterruptedException {
 
-        onBoardingcustomerl0(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender,
-                nationality, pProvince, mProvince, identityType, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
+        onBoardingcustomerl0(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality, pProvince, mProvince, identityType, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
 
         playwrightGenerics.page.locator("#employerName").fill("AutoSoft Dynamics");
 
-        ElementHandle OtherCheckBox = (ElementHandle) playwrightGenerics.page.locator("/html/body/div[1]/div[3]/div[4]/div/div[2]/div[2]/form/div[3]" +
-                "/div[6]/div[4]/div[3]/div/div/div[1]/div/table/tbody/tr[2]/td/input");
+        ElementHandle OtherCheckBox = (ElementHandle) playwrightGenerics.page.locator("/html/body/div[1]/div[3]/div[4]/div/div[2]/div[2]/form/div[3]" + "/div[6]/div[4]/div[3]/div/div/div[1]/div/table/tbody/tr[2]/td/input");
         boolean isSelected = OtherCheckBox.isChecked();
 
         if (isSelected) {
             playwrightGenerics.page.locator("#sourcesOfIncomeCBOther").fill("xyz");
         } else {
-            playwrightGenerics.page.locator("/html/body/div[1]/div[3]/div[4]/div/div[2]/" +
-                    "div[2]/form/div[3]/div[6]/div[4]/div[3]/div/div/div[1]/div/table/tbody/tr[1]/td/input").click();
+            playwrightGenerics.page.locator("/html/body/div[1]/div[3]/div[4]/div/div[2]/" + "div[2]/form/div[3]/div[6]/div[4]/div[3]/div/div/div[1]/div/table/tbody/tr[1]/td/input").click();
         }
 
         return true;
     }
 
-    public static boolean onBoardingRemoteZeroDigitalTransaction(String accountTitle, String accountNumber, String nVerification, String motherName,
-                                                                 String fatherName, String POB, String gender, String nationality, String identityType, String pProvince,
-                                                                 String mProvince, String identityNumber, String permanentAddress, String permanentCity, String mailingAddress, String mailingCity) throws IOException {
-        onBoardingcustomerl0(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality,
-                identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
+    public static boolean onBoardingRemoteZeroDigitalTransaction(String accountTitle, String accountNumber, String nVerification, String motherName, String fatherName, String POB, String gender, String nationality, String identityType, String pProvince, String mProvince, String identityNumber, String permanentAddress, String permanentCity, String mailingAddress, String mailingCity) throws IOException, InterruptedException {
+        onBoardingcustomerl0(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality, identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
         return true;
 
     }
 
-    public static boolean onBoardingL0bvsCorporateUser(String accountTitle,
-                                                       String accountNumber, String nVerification, String motherName,
-                                                       String fatherName, String POB, String gender, String nationality, String identityType, String pProvince, String mProvince, String identityNumber, String permanentAddress,
-                                                       String permanentCity, String mailingAddress, String mailingCity) throws IOException {
+    public static boolean onBoardingL0bvsCorporateUser(String accountTitle, String accountNumber, String nVerification, String motherName, String fatherName, String POB, String gender, String nationality, String identityType, String pProvince, String mProvince, String identityNumber, String permanentAddress, String permanentCity, String mailingAddress, String mailingCity) throws IOException, InterruptedException {
 
         onBoardingcustomerl0(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality, identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
         return true;
     }
 
-    public static boolean onBoardingL1(String accountTitle, String accountNumber, String nVerification, String motherName, String fatherName, String POB, String gender,
-                                       String nationality, String identityType, String pProvince, String mProvince,
-                                       String identityNumber, String permanentAddress, String permanentCity, String mailingAddress, String mailingCity) throws IOException {
+    public static boolean onBoardingL1(String accountTitle, String accountNumber, String nVerification, String motherName, String fatherName, String POB, String gender, String nationality, String identityType, String pProvince, String mProvince, String identityNumber, String permanentAddress, String permanentCity, String mailingAddress, String mailingCity) throws IOException, InterruptedException {
 
-        onBoardingcustomerl0(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender,
-                nationality, identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
+        onBoardingcustomerl0(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality, identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
         return true;
 
     }
 
-    public static boolean onBoardingRemoteZeroCorporateSimSimUser(String accountTitle, String accountNumber, String nVerification, String motherName, String fatherName, String POB, String gender,
-                                                                  String nationality, String identityType, String pProvince, String mProvince, String identityNumber, String permanentAddress, String permanentCity, String mailingAddress, String mailingCity) throws IOException {
+    public static boolean onBoardingRemoteZeroCorporateSimSimUser(String accountTitle, String accountNumber, String nVerification, String motherName, String fatherName, String POB, String gender, String nationality, String identityType, String pProvince, String mProvince, String identityNumber, String permanentAddress, String permanentCity, String mailingAddress, String mailingCity) throws IOException, InterruptedException {
 
-        onBoardingcustomerl0(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality,
-                identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
+        onBoardingcustomerl0(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality, identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
         return true;
 
     }
 
-    public static boolean merchantHeadquarter(String accountTitle, String accountNumber, String nVerification,
-                                              String motherName, String fatherName, String POB, String gender, String nationality, String identityType, String pProvince, String mProvince,
-                                              String identityNumber, String permanentAddress,
-                                              String permanentCity, String mailingAddress, String mailingCity) throws IOException {
+    public static boolean merchantHeadquarter(String accountTitle, String accountNumber, String nVerification, String motherName, String fatherName, String POB, String gender, String nationality, String identityType, String pProvince, String mProvince, String identityNumber, String permanentAddress, String permanentCity, String mailingAddress, String mailingCity) throws IOException, InterruptedException {
 
-        onBoardingcustomerl0(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality,
-                identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
+        onBoardingcustomerl0(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality, identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
 
         return true;
 
     }
 
-    public static boolean onBoardingGuestDCUser(String accountTitle, String accountNumber, String nVerification, String motherName, String fatherName, String POB, String gender,
-                                                String nationality, String identityType, String pProvince, String mProvince, String identityNumber, String permanentAddress, String permanentCity, String mailingAddress, String mailingCity) throws IOException {
+    public static boolean onBoardingGuestDCUser(String accountTitle, String accountNumber, String nVerification, String motherName, String fatherName, String POB, String gender, String nationality, String identityType, String pProvince, String mProvince, String identityNumber, String permanentAddress, String permanentCity, String mailingAddress, String mailingCity) throws IOException, InterruptedException {
 
         onBoardingcustomerl0(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality, identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
         return true;
@@ -304,38 +299,26 @@ public class CustomerOnboarding {
 
     //////////////////// -------- ON BOARDING  L2 GROUP --------------- ///////////////////
 
-    public static boolean onBoardingL2Group(String accountTitle,
-                                            String accountNumber, String nVerification, String motherName,
-                                            String fatherName, String POB, String gender, String nationality, String identityType, String pProvince, String mProvince, String identityNumber, String permanentAddress,
-                                            String permanentCity, String mailingAddress, String mailingCity, String Name, String CNIC, String contactNumber, String residency
-            , String address, String ActualOwner, String BenificiaryCNIC, String ExpextedMonthlyNoTransactionCR, String ExpextedMonthlyAmtTransactionDB,
-                                            String ExpextedMonthlyAmtTransactionCR, String ExpextedMonthlyNoTransactionDB, String AvgYearlyIncome, String AvgYearlySales, String ntn,
-                                            String TaxIdentificationNumber, String customerType) throws InterruptedException, IOException {
+    public static boolean onBoardingL2Group(String accountTitle, String accountNumber, String nVerification, String motherName, String fatherName, String POB, String gender, String nationality, String identityType, String pProvince, String mProvince, String identityNumber, String permanentAddress, String permanentCity, String mailingAddress, String mailingCity, String Name, String CNIC, String contactNumber, String residency, String address, String ActualOwner, String BenificiaryCNIC, String ExpextedMonthlyNoTransactionCR, String ExpextedMonthlyAmtTransactionDB, String ExpextedMonthlyAmtTransactionCR, String ExpextedMonthlyNoTransactionDB, String AvgYearlyIncome, String AvgYearlySales, String ntn, String TaxIdentificationNumber, String customerType) throws InterruptedException, IOException {
 
 
         Utility.getActionsObject_submenu_homepage(submenu, submenu1);
 
         try {
-            Locator locator = (Locator) playwrightGenerics.page.locator("#id7");
+            Locator locator = playwrightGenerics.page.locator("//*[@id=\"id7\"]");
             locator.selectOption(setDropdown.setLabel(customerType));
             System.out.println("Selected Customer Type : " + locator);
 
         } catch (Exception e) {
 
-            Locator locator = (Locator) playwrightGenerics.page.locator("#id7");
+            Locator locator = playwrightGenerics.page.locator("//*[@id=\"id7\"]");
             locator.selectOption(setDropdown.setLabel(customerType));
             System.out.println("Selected Customer Type : " + locator);
         }
 
-        if (playwrightGenerics.page.locator("#id7").selectOption(setDropdown.setLabel(customerType)).equals("L2 Existing Customer")) {
+        if (playwrightGenerics.page.locator("//*[@id=\"id7\"]").selectOption(setDropdown.setLabel(customerType)).equals("L2 Existing Customer")) {
 
-            onBoardingL2(accountTitle,
-                    accountNumber, nVerification, motherName,
-                    fatherName, POB, gender, nationality, identityType, pProvince, mProvince, identityNumber, permanentAddress,
-                    permanentCity, mailingAddress, mailingCity, Name, CNIC, contactNumber, residency
-                    , address, ActualOwner, BenificiaryCNIC, ExpextedMonthlyNoTransactionCR, ExpextedMonthlyAmtTransactionCR,
-                    ExpextedMonthlyAmtTransactionDB, ExpextedMonthlyNoTransactionDB, AvgYearlyIncome, AvgYearlySales, ntn,
-                    TaxIdentificationNumber);
+            onBoardingL2(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality, identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity, Name, CNIC, contactNumber, residency, address, ActualOwner, BenificiaryCNIC, ExpextedMonthlyNoTransactionCR, ExpextedMonthlyAmtTransactionCR, ExpextedMonthlyAmtTransactionDB, ExpextedMonthlyNoTransactionDB, AvgYearlyIncome, AvgYearlySales, ntn, TaxIdentificationNumber);
 
         }
 
@@ -343,19 +326,13 @@ public class CustomerOnboarding {
     }
 
 
-    public static boolean onBoardingL2(String accountTitle,
-                                       String accountNumber, String nVerification, String motherName,
-                                       String fatherName, String POB, String gender, String nationality, String identityType, String pProvince, String mProvince, String identityNumber, String permanentAddress,
-                                       String permanentCity, String mailingAddress, String mailingCity, String Name, String CNIC, String contactNumber, String residency
-            , String address, String ActualOwner, String BenificiaryCNIC, String ExpextedMonthlyNoTransactionCR, String ExpextedMonthlyAmtTransactionCR,
-                                       String ExpextedMonthlyAmtTransactionDB, String ExpextedMonthlyNoTransactionDB, String AvgYearlyIncome, String AvgYearlySales, String ntn,
-                                       String TaxIdentificationNumber) throws IOException {
+    public static boolean onBoardingL2(String accountTitle, String accountNumber, String nVerification, String motherName, String fatherName, String POB, String gender, String nationality, String identityType, String pProvince, String mProvince, String identityNumber, String permanentAddress, String permanentCity, String mailingAddress, String mailingCity, String Name, String CNIC, String contactNumber, String residency, String address, String ActualOwner, String BenificiaryCNIC, String ExpextedMonthlyNoTransactionCR, String ExpextedMonthlyAmtTransactionCR, String ExpextedMonthlyAmtTransactionDB, String ExpextedMonthlyNoTransactionDB, String AvgYearlyIncome, String AvgYearlySales, String ntn, String TaxIdentificationNumber) throws IOException, InterruptedException {
 
 
-        Locator typeAccount = (Locator) playwrightGenerics.page.locator("#idd");
+        Locator typeAccount = playwrightGenerics.page.locator("#idd");
         typeAccount.selectOption("");
 
-        Locator PoliticalExposed = (Locator) playwrightGenerics.page.locator(("#id27"));
+        Locator PoliticalExposed = playwrightGenerics.page.locator(("#id27"));
         PoliticalExposed.selectOption("");
 
         // Login.driver.findElement(By.id("politicallyExposedComments")).sendKeys(PoliticalComments);
@@ -366,7 +343,7 @@ public class CustomerOnboarding {
         playwrightGenerics.page.locator("#nextOfKinCnic").fill(CNIC);
         //Assert.assertTrue(CNIC.matches("^(?=.*[1-9])[0-9+]{5}(-){1}[0-9+]{7}(-){1}[0-9]{1}$"));
 
-        Locator nextofkinNationality = (Locator) playwrightGenerics.page.locator("#nextOfKinNationality");
+        Locator nextofkinNationality = playwrightGenerics.page.locator("#nextOfKinNationality");
         nextofkinNationality.selectOption("PAKISTAN");
 
         playwrightGenerics.page.locator("#nextOfKinContactNo").fill(contactNumber);
@@ -468,26 +445,13 @@ public class CustomerOnboarding {
         }
 
 
-        onBoardingcustomerl0(accountTitle, accountNumber, nVerification, motherName, fatherName,
-                POB, gender, nationality, identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
+        onBoardingcustomerl0(accountTitle, accountNumber, nVerification, motherName, fatherName, POB, gender, nationality, identityType, pProvince, mProvince, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity);
 
         return true;
     }
 
 
-    public boolean onboardingCorporateGroup(String accountTitle,
-                                            String sellerCODE, String nameCnic, String motherName,
-                                            String fatherName, String placeofBirth, String identityType, String identityNumber, String permanentAddress,
-                                            String permanentCity, String mailingAddress, String mailingCity, String email,
-                                            String accountHolderMN, String actualOwner, String beneficialCnic,
-                                            String expectedCredit, String monthlyExpectedWithdrawal,
-                                            String expectedDebit, String monthlyExpectedDeposit,
-                                            String avergaeYearlyIncome, String averageYearlySales,
-                                            String expectedMonthlyThroughPut, String expectedAvgBalance,
-                                            String expectedMonthlyCreditSales,
-                                            String expectedMaxAmountPerTransaction,
-                                            String expectedNoOfTransaction, String annualTurnover,
-                                            String natureOfBusiness, String noTinComments, String customerType) throws InterruptedException, IOException {
+    public boolean onboardingCorporateGroup(String accountTitle, String sellerCODE, String nameCnic, String motherName, String fatherName, String placeofBirth, String identityType, String identityNumber, String permanentAddress, String permanentCity, String mailingAddress, String mailingCity, String email, String accountHolderMN, String actualOwner, String beneficialCnic, String expectedCredit, String monthlyExpectedWithdrawal, String expectedDebit, String monthlyExpectedDeposit, String avergaeYearlyIncome, String averageYearlySales, String expectedMonthlyThroughPut, String expectedAvgBalance, String expectedMonthlyCreditSales, String expectedMaxAmountPerTransaction, String expectedNoOfTransaction, String annualTurnover, String natureOfBusiness, String noTinComments, String customerType) throws InterruptedException, IOException {
 
 
         Utility.getActionsObject_submenu_homepage(submenu, submenu1);
@@ -495,40 +459,26 @@ public class CustomerOnboarding {
         // selecting the dropdown
 
         try {
-            Locator locator = (Locator) playwrightGenerics.page.locator("#id7");
+            Locator locator = playwrightGenerics.page.locator("//*[@id=\"id7\"]");
             locator.selectOption(setDropdown.setLabel(customerType));
             System.out.println("Selected Customer Type : " + locator);
 
         } catch (Exception e) {
 
-            Locator locator = (Locator) playwrightGenerics.page.locator("#id7");
+            Locator locator = playwrightGenerics.page.locator("//*[@id=\"id7\"]");
             locator.selectOption(setDropdown.setLabel(customerType));
             System.out.println("Selected Customer Type : " + locator);
         }
 
-        if (playwrightGenerics.page.locator("#id7").selectOption(customerType).equals(("Corporate Account Master Wallet"))) {
+        if (playwrightGenerics.page.locator("//*[@id=\"id7\"]").selectOption(customerType).equals(("Corporate Account Master Wallet"))) {
 
-            onboardingCorporateGroupMasterWallet(accountTitle, sellerCODE,
-                    nameCnic, motherName, fatherName, placeofBirth, identityNumber, identityType, permanentAddress, permanentCity,
-                    mailingAddress, mailingCity, email, accountHolderMN, actualOwner,
-                    beneficialCnic,
-                    expectedCredit, monthlyExpectedWithdrawal, expectedDebit, monthlyExpectedDeposit,
-                    avergaeYearlyIncome, averageYearlySales,
-                    expectedMonthlyThroughPut, expectedAvgBalance, expectedMonthlyCreditSales, expectedMaxAmountPerTransaction,
-                    expectedNoOfTransaction, annualTurnover, natureOfBusiness, noTinComments, customerType);
+            onboardingCorporateGroupMasterWallet(accountTitle, sellerCODE, nameCnic, motherName, fatherName, placeofBirth, identityNumber, identityType, permanentAddress, permanentCity, mailingAddress, mailingCity, email, accountHolderMN, actualOwner, beneficialCnic, expectedCredit, monthlyExpectedWithdrawal, expectedDebit, monthlyExpectedDeposit, avergaeYearlyIncome, averageYearlySales, expectedMonthlyThroughPut, expectedAvgBalance, expectedMonthlyCreditSales, expectedMaxAmountPerTransaction, expectedNoOfTransaction, annualTurnover, natureOfBusiness, noTinComments, customerType);
 
-        } else if (playwrightGenerics.page.locator("#id7").selectOption(customerType).equals(("Corporate Sim Sim Account User"))) {
+        } else if (playwrightGenerics.page.locator("//*[@id=\"id7\"]").selectOption(customerType).equals(("Corporate Sim Sim Account User"))) {
 
-            onboardingCorporateGroupMasterWallet(accountTitle, sellerCODE,
-                    nameCnic, motherName, fatherName, placeofBirth, identityType, identityNumber, permanentAddress, permanentCity,
-                    mailingAddress, mailingCity, email, accountHolderMN, actualOwner,
-                    beneficialCnic,
-                    expectedCredit, monthlyExpectedWithdrawal, expectedDebit, monthlyExpectedDeposit,
-                    avergaeYearlyIncome, averageYearlySales,
-                    expectedMonthlyThroughPut, expectedAvgBalance, expectedMonthlyCreditSales, expectedMaxAmountPerTransaction,
-                    expectedNoOfTransaction, annualTurnover, natureOfBusiness, noTinComments, customerType);
+            onboardingCorporateGroupMasterWallet(accountTitle, sellerCODE, nameCnic, motherName, fatherName, placeofBirth, identityType, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity, email, accountHolderMN, actualOwner, beneficialCnic, expectedCredit, monthlyExpectedWithdrawal, expectedDebit, monthlyExpectedDeposit, avergaeYearlyIncome, averageYearlySales, expectedMonthlyThroughPut, expectedAvgBalance, expectedMonthlyCreditSales, expectedMaxAmountPerTransaction, expectedNoOfTransaction, annualTurnover, natureOfBusiness, noTinComments, customerType);
 
-        } else if (playwrightGenerics.page.locator("#id7").selectOption(customerType).equals(("Agent FINJA"))) {
+        } else if (playwrightGenerics.page.locator("//*[@id=\"id7\"]").selectOption(customerType).equals(("Agent FINJA"))) {
 
             /// for different corporate groups
 
@@ -540,39 +490,18 @@ public class CustomerOnboarding {
             Locator premises = playwrightGenerics.page.locator("#premises");
             premises.selectOption(setDropdown.setLabel(""));
 
-            onboardingCorporateGroupMasterWallet(accountTitle, sellerCODE,
-                    nameCnic, motherName, fatherName, placeofBirth, identityType, identityNumber, permanentAddress, permanentCity,
-                    mailingAddress, mailingCity, email, accountHolderMN, actualOwner,
-                    beneficialCnic,
-                    expectedCredit, monthlyExpectedWithdrawal, expectedDebit, monthlyExpectedDeposit,
-                    avergaeYearlyIncome, averageYearlySales,
-                    expectedMonthlyThroughPut, expectedAvgBalance, expectedMonthlyCreditSales, expectedMaxAmountPerTransaction,
-                    expectedNoOfTransaction, annualTurnover, natureOfBusiness, noTinComments, customerType);
+            onboardingCorporateGroupMasterWallet(accountTitle, sellerCODE, nameCnic, motherName, fatherName, placeofBirth, identityType, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity, email, accountHolderMN, actualOwner, beneficialCnic, expectedCredit, monthlyExpectedWithdrawal, expectedDebit, monthlyExpectedDeposit, avergaeYearlyIncome, averageYearlySales, expectedMonthlyThroughPut, expectedAvgBalance, expectedMonthlyCreditSales, expectedMaxAmountPerTransaction, expectedNoOfTransaction, annualTurnover, natureOfBusiness, noTinComments, customerType);
 
-        } else if ((playwrightGenerics.page.locator("#id7").selectOption(customerType).equals(("Agent Finca")))) {
+        } else if ((playwrightGenerics.page.locator("//*[@id=\"id7\"]").selectOption(customerType).equals(("Agent Finca")))) {
 
-            onboardingCorporateGroupMasterWallet(accountTitle, sellerCODE,
-                    nameCnic, motherName, fatherName, placeofBirth, identityType, identityNumber, permanentAddress, permanentCity,
-                    mailingAddress, mailingCity, email, accountHolderMN, actualOwner,
-                    beneficialCnic,
-                    expectedCredit, monthlyExpectedWithdrawal, expectedDebit, monthlyExpectedDeposit,
-                    avergaeYearlyIncome, averageYearlySales,
-                    expectedMonthlyThroughPut, expectedAvgBalance, expectedMonthlyCreditSales, expectedMaxAmountPerTransaction,
-                    expectedNoOfTransaction, annualTurnover, natureOfBusiness, noTinComments, customerType);
+            onboardingCorporateGroupMasterWallet(accountTitle, sellerCODE, nameCnic, motherName, fatherName, placeofBirth, identityType, identityNumber, permanentAddress, permanentCity, mailingAddress, mailingCity, email, accountHolderMN, actualOwner, beneficialCnic, expectedCredit, monthlyExpectedWithdrawal, expectedDebit, monthlyExpectedDeposit, avergaeYearlyIncome, averageYearlySales, expectedMonthlyThroughPut, expectedAvgBalance, expectedMonthlyCreditSales, expectedMaxAmountPerTransaction, expectedNoOfTransaction, annualTurnover, natureOfBusiness, noTinComments, customerType);
         }
 
         return true;
 
     }
 
-    public boolean onboardingCorporateGroupMasterWallet(String accountTitle, String SellerCODE,
-                                                        String NameCnic, String motherName, String FatherName, String PlaceofBirth, String identityType, String identityNumber, String PermanentAddress, String PermanentCity,
-                                                        String MailingAddress, String MailingCity, String email, String AccountHolderMN, String ActualOwner,
-                                                        String beneficialCnic,
-                                                        String expectedCredit, String monthlyExpectedWithdrawal, String expectedDebit, String monthlyExpectedDeposit,
-                                                        String avergaeYearlyIncome, String averageYearlySales,
-                                                        String expectedMonthlyThroughPut, String expectedAvgBalance, String expectedMonthlyCreditSales, String expectedMaxAmountPerTransaction,
-                                                        String expectedNoOfTransaction, String annualTurnover, String natureOfBusiness, String noTinComments, String customerType) throws InterruptedException, IOException {
+    public boolean onboardingCorporateGroupMasterWallet(String accountTitle, String SellerCODE, String NameCnic, String motherName, String FatherName, String PlaceofBirth, String identityType, String identityNumber, String PermanentAddress, String PermanentCity, String MailingAddress, String MailingCity, String email, String AccountHolderMN, String ActualOwner, String beneficialCnic, String expectedCredit, String monthlyExpectedWithdrawal, String expectedDebit, String monthlyExpectedDeposit, String avergaeYearlyIncome, String averageYearlySales, String expectedMonthlyThroughPut, String expectedAvgBalance, String expectedMonthlyCreditSales, String expectedMaxAmountPerTransaction, String expectedNoOfTransaction, String annualTurnover, String natureOfBusiness, String noTinComments, String customerType) throws InterruptedException, IOException {
 
 
         playwrightGenerics.page.locator("#sellerCode").fill(SellerCODE);
@@ -580,19 +509,19 @@ public class CustomerOnboarding {
         Locator typeAccount = playwrightGenerics.page.locator("#idd");
         typeAccount.selectOption(setDropdown.setLabel(""));
 
-        Locator nationality =playwrightGenerics.page.locator("#nationality2");
+        Locator nationality = playwrightGenerics.page.locator("#nationality2");
         nationality.selectOption(setDropdown.setLabel(""));
 
         playwrightGenerics.page.locator("#id4").fill(accountTitle);
         //	Assert.assertTrue(accountTitle.matches("^[a-zA-Z\\s]*$"));
 
-      playwrightGenerics.page.locator("#nameAsPerCnic").fill(NameCnic);
+        playwrightGenerics.page.locator("#nameAsPerCnic").fill(NameCnic);
         //Assert.assertTrue(NameCnic.matches("^(?=.*[1-9])[0-9+]{5}(-){1}[0-9+]{7}(-){1}[0-9]{1}$"));
 
-      playwrightGenerics.page.locator("#motherName").fill(motherName);
+        playwrightGenerics.page.locator("#motherName").fill(motherName);
         //Assert.assertTrue(motherName.matches("^[a-zA-Z\\s]*$"));
 
-      playwrightGenerics.page.locator("#fatherHusbandName").fill(FatherName);
+        playwrightGenerics.page.locator("#fatherHusbandName").fill(FatherName);
         //Assert.assertTrue(FatherName.matches("^[a-zA-Z\\s]*$"));
 
         playwrightGenerics.page.locator("#placeOfBirth").fill(PlaceofBirth);
@@ -600,20 +529,8 @@ public class CustomerOnboarding {
 
         //SELECTING RANDOM DATES
 
-        try {
-           playwrightGenerics.page.locator("#birthDate").click();
-            ;
-            Thread.sleep(500);
-            Utility.selectDate( month_year, day);
-
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-
-            e.printStackTrace();
-        }
-
-        try {
-          playwrightGenerics.page.locator("#cnicExpiryDate").click();
+     /*   try {
+            playwrightGenerics.page.locator("#birthDate").click();
             ;
             Thread.sleep(500);
             Utility.selectDate(month_year, day);
@@ -625,7 +542,7 @@ public class CustomerOnboarding {
         }
 
         try {
-           playwrightGenerics.page.locator("#issuanceDate").click();
+            playwrightGenerics.page.locator("#cnicExpiryDate").click();
             ;
             Thread.sleep(500);
             Utility.selectDate(month_year, day);
@@ -635,6 +552,18 @@ public class CustomerOnboarding {
 
             e.printStackTrace();
         }
+
+        try {
+            playwrightGenerics.page.locator("#issuanceDate").click();
+            ;
+            Thread.sleep(500);
+            Utility.selectDate(month_year, day);
+
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+
+            e.printStackTrace();
+        }*/
 
         //SELECT STATEMENTS ARE USED FOR DROPDOWNS
 
@@ -642,16 +571,16 @@ public class CustomerOnboarding {
         gender.selectOption(setDropdown.setLabel(""));
 
         playwrightGenerics.page.locator("#identityValue").fill(identityNumber);
-      playwrightGenerics.page.locator("#permanentAddress").fill(PermanentAddress);
+        playwrightGenerics.page.locator("#permanentAddress").fill(PermanentAddress);
         //Login.driver.findElement(By.id("permanentCity")).sendKeys(PermanentCity);
 
   /*      DesiredCapabilities dc = new DesiredCapabilities();
         dc.setCapability(CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.IGNORE);
 */
         playwrightGenerics.page.locator("#mailingOrBusinessAddress").fill(MailingAddress);
-   //     dc.setCapability(CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.IGNORE);
+        //     dc.setCapability(CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.IGNORE);
 
-      playwrightGenerics.page.locator("#mailingOrBusinessCity").fill(MailingCity);
+        playwrightGenerics.page.locator("#mailingOrBusinessCity").fill(MailingCity);
         playwrightGenerics.page.locator("#email").fill(email);
 
         Locator pOA = playwrightGenerics.page.locator("#id46");
@@ -662,7 +591,7 @@ public class CustomerOnboarding {
         Locator province = playwrightGenerics.page.locator("#permanentState");
         province.selectOption(setDropdown.setLabel(""));
 
-        Locator MailingProvince =playwrightGenerics.page.locator("#mailingOrBusinessState");
+        Locator MailingProvince = playwrightGenerics.page.locator("#mailingOrBusinessState");
         MailingProvince.selectOption(setDropdown.setLabel(""));
 
 
@@ -674,7 +603,7 @@ public class CustomerOnboarding {
         Locator Relation = playwrightGenerics.page.locator("#id51");
         Relation.selectOption(setDropdown.setLabel(""));
 
-      playwrightGenerics.page.locator("#cnicBeneficial").fill(beneficialCnic);
+        playwrightGenerics.page.locator("#cnicBeneficial").fill(beneficialCnic);
 
         Locator TxnMode = playwrightGenerics.page.locator("#modeOfTransaction");
         TxnMode.selectOption(setDropdown.setLabel(""));
@@ -720,11 +649,9 @@ public class CustomerOnboarding {
         //////AUTOMATING DIRECTOR'S PAGE///////
         //////////////////////////////////////
 
-        playwrightGenerics.page.locator(("/html/body/div[1]/div[3]/div[4]/div/div[2]/div/div/form/div[2]/div[2]/div[2]/div[2]/div/input"))
-                .fill("Absar ahmed Mujaddidi");
+        playwrightGenerics.page.locator(("/html/body/div[1]/div[3]/div[4]/div/div[2]/div/div/form/div[2]/div[2]/div[2]/div[2]/div/input")).fill("Absar ahmed Mujaddidi");
 
-        playwrightGenerics.page.locator("/html/body/div[1]/div[3]/div[4]/div/div[2]/div/div/form/div[2]/div[2]/div[2]/div[3]/div/input").
-        fill("lahore rehman gardens");
+        playwrightGenerics.page.locator("/html/body/div[1]/div[3]/div[4]/div/div[2]/div/div/form/div[2]/div[2]/div[2]/div[3]/div/input").fill("lahore rehman gardens");
 
         Locator ID = playwrightGenerics.page.locator(("/html/body/div[1]/div[3]/div[4]/div/div[2]/div/div/form/div[2]/div[2]/div[2]/div[4]/div/select"));
         ID.selectOption(setDropdown.setLabel(""));
@@ -738,7 +665,7 @@ public class CustomerOnboarding {
         //////////////////////////////////////////
         //SELECTING RANDOM DATE FOR DIRECTOR DOB//
         //////////////////////////////////////////
-
+/*
         try {
             playwrightGenerics.page.locator("#directorDateofBirth").click();
             Thread.sleep(500);
@@ -748,12 +675,12 @@ public class CustomerOnboarding {
         } catch (InterruptedException e) {
 
             e.printStackTrace();
-        }
+        }*/
 
         //for proceeding after adding director//
         playwrightGenerics.page.locator("#idb8").click();
 
-        playwrightGenerics.page.wait(1000);
+        // playwrightGenerics.page.wait(1000);
 
         Thread.sleep(250);
         //CLICKING ON CONTINUE BUTTON ON DIRECTOR'S PAGE//
