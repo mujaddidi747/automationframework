@@ -14,7 +14,7 @@ import java.util.List;
 
 public class dataProvider {
 
-    static Object data[][];
+    static Object[][] data;
 
     @DataProvider(name = "registrationGroup")
     public static Object[][] gettestDataRegistrationGroup() throws IOException{

@@ -12,32 +12,40 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static customerOnboarding.playwrightGenerics.page;
 
 public class Utility {
     static Playwright playwright = Playwright.create();
     static Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
 
-   // static BrowserContext context = browser.newContext();
+    // static BrowserContext context = browser.newContext();
 
-
+    static FileInputStream file = null;
     static Workbook book;
     static Sheet sheet;
-    public static String TestData_Sheet_Path = "*************";
+    public static String TestData_Sheet_Path = "D:\\MobiliserCustomerOnboardingAutomation\\customerOnboarding.xlsx";
 
     Login login = new Login();
 
     ///////////////////////////////////////////////////////
+
     ///////////////////////////////////////////////////////
 
-    public static void getActionsObject_submenu_homepage(ElementHandle submenu, ElementHandle submenu1) {
+    public static synchronized void getActionsObject_submenu_homepage(Locator submenu, Locator submenu1) throws InterruptedException {
 
-        submenu = (ElementHandle) page.locator("//*[@id='pageWrap']/div[3]/ul[1]/span/span[6]/li/span");
+    //    submenu = page.locator("//*[@id=\"pageWrap\"]/div[3]/ul[1]/span/span[6]/li/span");
+        submenu = page.getByText("CUSTOMER CARE");
         submenu.hover();
 
-        submenu1 = (ElementHandle) page.locator("//*[@id='pageWrap']/div[3]/ul[1]/span/span[6]/li/ul/span[1]/li/a/span");
-        submenu1.click();
+        //  submenu.selectOption(setDropdown.setLabel("CUSTOMER REGISTRATION"));
 
+        submenu1 = page.getByText("CUSTOMER REGISTRATION").last();
+
+        synchronized (playwright) {
+            if(submenu1.isEnabled())
+            submenu1.click();
+        }
 
     }
 
@@ -45,7 +53,6 @@ public class Utility {
 
         System.out.println("*** Into the Sheets Name ***");
 
-        FileInputStream file = null;
 
         try {
             file = new FileInputStream(TestData_Sheet_Path);
@@ -104,59 +111,34 @@ public class Utility {
     }
 
 
-    public static void selectDate(String month_year, String select_day) throws InterruptedException {
+   /* public static void selectDate(String month_year, String select_day) throws InterruptedException {
 
-        Random numberCalendar = new Random();
-        int low = 1;
-        int high = 10;
-        int randomYear = numberCalendar.nextInt(high - low) + low;
-        //System.out.println("randomYear: "+randomYear);
-        List<ElementHandle> elementsYear = (List<ElementHandle>) page.locator("/html/body/div[2]/div/div/select[2]/option[" + randomYear + "]");
-        //System.out.print("a");
-        //System.out.println(elementsYear.get(0).getText());
-        elementsYear.get(0).click();
-        numberCalendar = new Random();
-        low = 1;
-        high = 12;
-        int randomMonth = numberCalendar.nextInt(high - low) + low;
-        //System.out.println("randomMonth: "+randomMonth);
-        List<ElementHandle> elements = (List<ElementHandle>) page.locator("/html/body/div[2]/div/div/select[1]/option[" + randomMonth + "]");
+        page.setDefaultTimeout(3500);
+        page.locator(".ui-datepicker-prev ui-corner-all");
 
-        for (int i = 0; i < elements.size(); i++) {
-            //System.out.println(elements.get(i).getText());
-            elements.get(0).click();
-        }
-        // Selecting the month
-        // Selecting the date
-        numberCalendar = new Random();
-        low = 2;
-        high = 4;
-        int randomDateRow = numberCalendar.nextInt(high - low) + low;
-        //System.out.println("randomDateRow: "+randomDateRow);
-        numberCalendar = new Random();
-        low = 1;
-        high = 7;
-        int randomDateCol = numberCalendar.nextInt(high - low) + low;
-        //System.out.println("randomDateCol: "+randomDateCol);
+      //  page.click("ui-datepicker-div");
 
-        List<ElementHandle> days = (List<ElementHandle>) page.locator("/html/body/div[2]/table/tbody/tr[" + randomDateRow + "]/td[" + randomDateCol + "]/a");
+        String randomDateSelector = getRandomDateSelector();
+        page.click(randomDateSelector);
 
-        for (ElementHandle d : days) {
-            //		System.out.println(d.getText());
-            d.click();
-            return;
-        }
+
+    }*/
+
+    private static void selectDate() {
+
+
     }
 
-    public static void riskTypes(){
+    public static void riskTypes() {
 
-        Locator AccountOrganizationType =  playwrightGenerics.page.locator("#id6e");
+        Locator AccountOrganizationType = playwrightGenerics.page.locator("#id6e");
+
         AccountOrganizationType.selectOption("Low Risk");
 
-        Locator PoliticallyExposedPerson =  playwrightGenerics.page.locator("#id6f");
+        Locator PoliticallyExposedPerson = playwrightGenerics.page.locator("#id6f");
         PoliticallyExposedPerson.selectOption("Low Risk");
 
-        Locator CustomerOwnership =  playwrightGenerics.page.locator("#id70");
+        Locator CustomerOwnership = playwrightGenerics.page.locator("#id70");
         CustomerOwnership.selectOption("Low Risk");
 
         Locator CustomerRefuse = playwrightGenerics.page.locator("#id71");

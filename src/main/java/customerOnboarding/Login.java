@@ -3,48 +3,64 @@ package customerOnboarding;
 import com.microsoft.playwright.*;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
 
+import static customerOnboarding.playwrightGenerics.*;
+
 public class Login {
 
 
-    @BeforeMethod
+    @BeforeTest
     public void setup() throws InterruptedException {
 
 
-        String url = String.valueOf(playwrightGenerics.page.navigate("*********"));
 
+        playwrightGenerics.page.navigate("");
 
-        playwrightGenerics.page.locator("//*[@id='user']").fill("**********");
-        playwrightGenerics.page.locator("//*[@id='password']").fill("******");
+        page.onConsoleMessage(msg -> {
+            System.out.println("Type: " + msg.type());
+            System.out.println("Message: " + msg.text());
+        });
+
+        page.setViewportSize(1920,900);
+
+        playwrightGenerics.page.locator("//*[@id='user']").fill("");
+        playwrightGenerics.page.locator("//*[@id='password']").fill("");
 
         playwrightGenerics.page.locator("//*[@id='consumerForm']/li[3]/table/tbody/tr/td[1]/input")
                 .click();
 
 
+
     }
 
     @Test(dataProvider = "registrationGroup", dataProviderClass = dataProvider.class)
-    public static void registrationSelectionFunction(String dataValues[]) throws InterruptedException, IOException {
+    public static  void registrationSelectionFunction(String[] dataValues) throws InterruptedException, IOException {
+
+        //  System.out.println(dataValues.length - 1);
+
+        //  playwrightGenerics.page.setDefaultTimeout(200);
 
         System.out.println("HI I AM AUTOMATING CUSTOMER ONBOARDING WITH PLAYWRIGHT");
 
-        System.out.println("*** Into the CustomerRegistration ***");
-        System.out.println("length of string : " + dataValues.length);
+ /*       System.out.println("*** Into the CustomerRegistration ***");
+        System.out.println("length of string : " + dataValues.length);*/
 
         String customerType = dataValues[dataValues.length - 1];
 
         System.out.println("*** Into the CustomerRegistration ***"
                 + customerType);
 
+
         // calling classes
 
 
         CustomerOnboarding cstOnboard = new CustomerOnboarding();
 
-        playwrightGenerics.page.wait(1000);
+        //  playwrightGenerics.page.wait(1000);
 
         if (customerType.equalsIgnoreCase("L0")
                 || customerType.equalsIgnoreCase("L1 Corporate SimSim User")
@@ -57,6 +73,8 @@ public class Login {
                 || customerType.equalsIgnoreCase("L0 BVS User")
                 || customerType.equalsIgnoreCase("Merchant Headquarter")) {
 
+            page.setDefaultTimeout(5500);
+
             CustomerOnboarding.onBoarding(dataValues[0], dataValues[1],
                     dataValues[2], dataValues[3], dataValues[4], dataValues[5],
                     dataValues[6], dataValues[7], dataValues[8], dataValues[9],
@@ -64,11 +82,9 @@ public class Login {
                     dataValues[13], dataValues[14], dataValues[15],
                     dataValues[16]);
 
-        }
 
 
-
-        else if( customerType.equalsIgnoreCase("L2-Individual")
+        } else if (customerType.equalsIgnoreCase("L2-Individual")
                 || customerType.equalsIgnoreCase("L2 Existing Customer")
                 || customerType.equalsIgnoreCase("L2-Individual-10000")
                 || customerType.equalsIgnoreCase("L2-Individual-250000")
@@ -79,7 +95,7 @@ public class Login {
                 || customerType.equalsIgnoreCase("L2 Individual Staff-2500000")
                 || customerType.equalsIgnoreCase("L2 Individual Staff-700000")) {
 
-            cstOnboard.onBoardingL2Group(dataValues[0], dataValues[1],
+            CustomerOnboarding.onBoardingL2Group(dataValues[0], dataValues[1],
                     dataValues[2], dataValues[3], dataValues[4], dataValues[5],
                     dataValues[6], dataValues[7], dataValues[8], dataValues[9],
                     dataValues[10], dataValues[11], dataValues[12],
@@ -91,10 +107,7 @@ public class Login {
                     dataValues[28], dataValues[29], dataValues[30],
                     dataValues[31]);
 
-        }
-
-
-        else if (customerType.equalsIgnoreCase("Corporate Account Master Wallet")
+        } else if (customerType.equalsIgnoreCase("Corporate Account Master Wallet")
                 || customerType.equalsIgnoreCase("Corporate Sim Sim Account User")
                 || customerType.equalsIgnoreCase("Agent FINJA")
                 || customerType.equalsIgnoreCase("Agent Finca")) {
@@ -114,16 +127,18 @@ public class Login {
         }
 
 
-
     }
 
 
-    @AfterMethod
+
+   @AfterMethod
     public static void testBrowserClose() {
 
-        playwrightGenerics.playwright.close();
+
+    page.pause();
 
     }
+
 
 
 }
