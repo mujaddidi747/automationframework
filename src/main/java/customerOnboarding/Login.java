@@ -1,21 +1,15 @@
 package customerOnboarding;
 
 import com.microsoft.playwright.*;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.io.IOException;
 
 import static customerOnboarding.playwrightGenerics.*;
 
 public class Login {
-
-
     @BeforeTest
     public void setup() throws InterruptedException {
-
 
 
         playwrightGenerics.page.navigate("");
@@ -25,7 +19,7 @@ public class Login {
             System.out.println("Message: " + msg.text());
         });
 
-        page.setViewportSize(1920,900);
+        page.setViewportSize(1920, 900);
 
         playwrightGenerics.page.locator("//*[@id='user']").fill("");
         playwrightGenerics.page.locator("//*[@id='password']").fill("");
@@ -34,11 +28,11 @@ public class Login {
                 .click();
 
 
-
     }
 
     @Test(dataProvider = "registrationGroup", dataProviderClass = dataProvider.class)
-    public static  void registrationSelectionFunction(String[] dataValues) throws InterruptedException, IOException {
+
+    public static void registrationSelectionFunction(String[] dataValues) throws InterruptedException, IOException {
 
         //  System.out.println(dataValues.length - 1);
 
@@ -83,8 +77,8 @@ public class Login {
                     dataValues[16]);
 
 
-
-        } else if (customerType.equalsIgnoreCase("L2-Individual")
+        }
+        else if (customerType.equalsIgnoreCase("L2-Individual")
                 || customerType.equalsIgnoreCase("L2 Existing Customer")
                 || customerType.equalsIgnoreCase("L2-Individual-10000")
                 || customerType.equalsIgnoreCase("L2-Individual-250000")
@@ -107,7 +101,10 @@ public class Login {
                     dataValues[28], dataValues[29], dataValues[30],
                     dataValues[31]);
 
-        } else if (customerType.equalsIgnoreCase("Corporate Account Master Wallet")
+            page.setDefaultTimeout(500000);
+
+        }
+      /*  else if (customerType.equalsIgnoreCase("Corporate Account Master Wallet")
                 || customerType.equalsIgnoreCase("Corporate Sim Sim Account User")
                 || customerType.equalsIgnoreCase("Agent FINJA")
                 || customerType.equalsIgnoreCase("Agent Finca")) {
@@ -121,24 +118,21 @@ public class Login {
                     dataValues[18], dataValues[19], dataValues[20],
                     dataValues[21], dataValues[22], dataValues[23],
                     dataValues[24], dataValues[25], dataValues[26],
-                    dataValues[27], dataValues[28], dataValues[29],
-                    dataValues[30]);
+                    dataValues[27], dataValues[28], dataValues[29], dataValues[30]);
 
-        }
+        }*/
 
 
     }
 
 
+    @AfterMethod
+    public static void testBrowserClose() throws InterruptedException {
 
-   @AfterMethod
-    public static void testBrowserClose() {
+  page.waitForTimeout(5000);
 
-
-    page.pause();
 
     }
-
 
 
 }

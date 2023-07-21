@@ -17,6 +17,7 @@ import static customerOnboarding.playwrightGenerics.page;
 
 public class Utility {
     static Playwright playwright = Playwright.create();
+
     static Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
 
     // static BrowserContext context = browser.newContext();
@@ -24,7 +25,7 @@ public class Utility {
     static FileInputStream file = null;
     static Workbook book;
     static Sheet sheet;
-    public static String TestData_Sheet_Path = "D:\\MobiliserCustomerOnboardingAutomation\\customerOnboarding.xlsx";
+    public static String TestData_Sheet_Path = "";
 
     Login login = new Login();
 
@@ -124,55 +125,55 @@ public class Utility {
 
     }*/
 
-    private static void selectDate() {
+/*    private static void selectDate() {
 
 
-    }
+    }*/
 
     public static void riskTypes() {
 
-        Locator AccountOrganizationType = playwrightGenerics.page.locator("#id6e");
+        Locator AccountOrganizationType = playwrightGenerics.page.locator("#id140");
 
         AccountOrganizationType.selectOption("Low Risk");
 
-        Locator PoliticallyExposedPerson = playwrightGenerics.page.locator("#id6f");
+        Locator PoliticallyExposedPerson = playwrightGenerics.page.locator("#id141");
         PoliticallyExposedPerson.selectOption("Low Risk");
 
-        Locator CustomerOwnership = playwrightGenerics.page.locator("#id70");
+        Locator CustomerOwnership = playwrightGenerics.page.locator("#id142");
         CustomerOwnership.selectOption("Low Risk");
 
-        Locator CustomerRefuse = playwrightGenerics.page.locator("#id71");
+        Locator CustomerRefuse = playwrightGenerics.page.locator("#id143");
         CustomerRefuse.selectOption("Low Risk");
 
-        Locator CustomerDealing = playwrightGenerics.page.locator("#id72");
+        Locator CustomerDealing = playwrightGenerics.page.locator("#id144");
         CustomerDealing.selectOption("Low Risk");
 
-        Locator IsResident = playwrightGenerics.page.locator("#id73");
+        Locator IsResident = playwrightGenerics.page.locator("#id145");
         IsResident.selectOption("Low Risk");
 
-        Locator IsActualOwner = playwrightGenerics.page.locator("#id74");
+        Locator IsActualOwner = playwrightGenerics.page.locator("#id146");
         IsActualOwner.selectOption("Low Risk");
 
-        Locator IsCustomerDirector = playwrightGenerics.page.locator("#id75");
+        Locator IsCustomerDirector = playwrightGenerics.page.locator("#id147");
         IsCustomerDirector.selectOption("Low Risk");
 
-        Locator IsCustomerHouseWife = playwrightGenerics.page.locator("#id76");
+        Locator IsCustomerHouseWife = playwrightGenerics.page.locator("#id148");
         IsCustomerHouseWife.selectOption("Low Risk");
 
-        Locator IsMinorAccount = playwrightGenerics.page.locator("#id77");
+        Locator IsMinorAccount = playwrightGenerics.page.locator("#id149");
         IsMinorAccount.click();
         IsMinorAccount.selectOption("High Risk");
 
-        Locator IsHighRiskBusiness = playwrightGenerics.page.locator("#id78");
+        Locator IsHighRiskBusiness = playwrightGenerics.page.locator("#id14a");
         IsHighRiskBusiness.selectOption("Low Risk");
 
-        Locator IsClientProfile = playwrightGenerics.page.locator("#id79");
+        Locator IsClientProfile = playwrightGenerics.page.locator("#id14b");
         IsClientProfile.selectOption("Low Risk");
 
-        Locator IsComplexStructure = playwrightGenerics.page.locator("#id7a");
+        Locator IsComplexStructure = playwrightGenerics.page.locator("#id14c");
         IsComplexStructure.selectOption("High Risk");
 
-        Locator IsMailInstruction = playwrightGenerics.page.locator("#id7b");
+        Locator IsMailInstruction = playwrightGenerics.page.locator("#id14d");
         IsMailInstruction.selectOption("High Risk");
 
         //RISK RATING
@@ -180,6 +181,4 @@ public class Utility {
         RiskRating.selectOption("Low Risk");
 
     }
-
-
 }
